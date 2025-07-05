@@ -14,6 +14,7 @@ export const getComments = asyncHandler(async (req: Request, res: Response) => {
 export const postComment = asyncHandler(async (req: Request, res: Response) => {
   const { imageId } = req.params;
   const { username, text } = req.body;
+  
 
   if (!text || text.length < 3) {
     res.status(400).json({ error: 'Comment must be at least 3 characters long' });

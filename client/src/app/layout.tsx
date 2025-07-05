@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
 import { Inter } from 'next/font/google';
+// import { ReactNode } from "react";
+import { Provider } from "react-redux";
+import { store } from "./store";
+import { Toaster } from 'react-hot-toast';
+import Navbar from "./components/Navbar";
 import "./globals.css";
+import { useAppDispatch } from "./store/hooks";
+import { loadUserFromStorage } from './store/authSlice';
+import { useEffect } from "react";
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -14,16 +22,25 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(loadUserFromStorage());
+  }, [dispatch]);
   return (
     <html lang="en">
       <body
-      className={inter.className}
-      style={{
-        backgroundColor: "#121212",
-        color: "#fff",
-      }}
+        className={inter.className}
+        style={{
+          backgroundColor: "#121212",
+          color: "#fff",
+        }}
       >
-        {children}
+        <Provider store={store}>
+          <Navbar />
+          <Toaster position="top-right" />
+          {children}
+        </Provider>
       </body>
     </html>
   );
