@@ -8,7 +8,7 @@ interface User {
 }
 
 interface AuthState {
-  user: User | null;
+  user: null | User;
   token: string | null;
   loading: boolean;
   error: string | null;
@@ -49,15 +49,15 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    loadUserFromStorage: (state) => {
-      const token = localStorage.getItem("token");
-      const user = localStorage.getItem("user");
+    // loadUserFromStorage: (state) => {
+    //   const token = localStorage.getItem("token");
+    //   const user = localStorage.getItem("user");
 
-      if (token && user) {
-        state.token = token;
-        state.user = JSON.parse(user);
-      }
-    },
+    //   if (token && user) {
+    //     state.token = token;
+    //     state.user = JSON.parse(user);
+    //   }
+    // },
     logout: (state) => {
       state.token = null;
       state.user = null;
@@ -72,7 +72,7 @@ const authSlice = createSlice({
         state.token = action.payload.token;
       })
       .addCase(login.fulfilled, (state, action) => {
-        state.user = action.payload.user;
+        state.user = action.payload;
         state.token = action.payload.token;
         // After successful login/signup
         localStorage.setItem("user", JSON.stringify(action.payload));
@@ -81,5 +81,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { loadUserFromStorage, logout } = authSlice.actions;
+// export const { loadUserFromStorage, logout } = authSlice.actions;
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;

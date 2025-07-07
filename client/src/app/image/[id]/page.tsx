@@ -8,6 +8,7 @@ import { fetchComments, postComment } from '@/app/store/commentsSlice';
 import toast from 'react-hot-toast';
 
 import { RootState } from '@/app/store';
+import TagDisplay from '@/app/components/tagDisplay';
 
 const ImageDetailPage = () => {
     const { id } = useParams();
@@ -43,6 +44,12 @@ const ImageDetailPage = () => {
     return (
         <div className="max-w-3xl mx-auto px-4 py-6">
             <h1 className="text-2xl font-bold mb-6">Image Detail</h1>
+
+            {/* 🔖 Tags */}
+            <section className="mt-8">
+                <h2 className="text-xl font-semibold mb-4">🏷️ Tags</h2>
+                <TagDisplay imageId={imageId} />
+            </section>
 
             {/* Comments Section */}
             <section className="mt-8">

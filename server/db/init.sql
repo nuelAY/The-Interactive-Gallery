@@ -1,0 +1,51 @@
+-- Drop tables (dev reset)
+DROP TABLE IF EXISTS image_tags;
+DROP TABLE IF EXISTS tags;
+DROP TABLE IF EXISTS likes;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS users;
+
+-- USERS TABLE
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- COMMENTS TABLE
+CREATE TABLE IF NOT EXISTS comments (
+  id SERIAL PRIMARY KEY,
+  image_id VARCHAR(255) NOT NULL,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  text TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- LIKES TABLE
+CREATE TABLE IF NOT EXISTS likes (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  image_id VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE (user_id, image_id)
+);
+
+-- TAGS TABLE
+CREATE TABLE IF NOT EXISTS tags (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(50) UNIQUE NOT NULL
+);
+
+-- IMAGE_TAGS TABLE
+CREATE TABLE IF NOT EXISTS image_tags (
+  image_id VARCHAR(255) NOT NULL,
+  tag_id INTEGER REFERENCES tags(id) ON DELETE CASCADE,
+  PRIMARY KEY (image_id, tag_id)
+);
+
+-- Indexes (optional for performance)
+CREATE INDEX IF NOT EXISTS idx_comments_image_id ON comments(image_id);
+CREATE INDEX IF NOT EXISTS idx_likes_image_id ON likes(image_id);
+CREATE INDEX IF NOT EXISTS idx_image_tags_image_id ON image_tags(image_id);

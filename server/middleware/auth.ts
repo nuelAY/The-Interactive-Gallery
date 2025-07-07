@@ -1,13 +1,20 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import User, { IUser } from '../models/User';
+import { getUserById } from '../models/User';
 
 export interface AuthRequest extends Request {
-  file?: any; 
-  user?: IUser;         
+  user?: {
+    id: number;
+    name: string;
+    email: string;
+  };
 }
 
-export const protect = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+export const protect = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -18,8 +25,8 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
   const token = authHeader.split(' ')[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string };
-    const user = await User.findById(decoded.id).select('-password');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: number };
+    const user = await getUserById(decoded.id);
 
     if (!user) {
       res.status(401).json({ message: 'User not found' });
