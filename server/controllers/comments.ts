@@ -1,8 +1,10 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response} from "express";
 import asyncHandler from "express-async-handler";
 import db from "../db";
 import pool from "../db";
 
+
+// To fetch comments made by user
 export const getComments = asyncHandler(async (req: Request, res: Response) => {
   const { imageId } = req.params;
   const result = await db.query(
@@ -12,6 +14,8 @@ export const getComments = asyncHandler(async (req: Request, res: Response) => {
   res.json(result.rows);
 });
 
+
+// To collect and store comments made by user
 export const postComment = asyncHandler (async (req: Request, res: Response) => {
   const { text } = req.body;
   const { imageId } = req.params;
@@ -38,15 +42,15 @@ export const postComment = asyncHandler (async (req: Request, res: Response) => 
 
 
 
-function async(
-  arg0: (
-    req: Request,
-    res: Response
-  ) => Promise<Response<any, Record<string, any>> | undefined>
-) {
-  throw new Error("Function not implemented.");
-}
-function next(arg0: Error): Response<any, Record<string, any>> | PromiseLike<Response<any, Record<string, any>> | undefined> | undefined {
-  throw new Error("Function not implemented.");
-}
+// function async(
+//   arg0: (
+//     req: Request,
+//     res: Response
+//   ) => Promise<Response<any, Record<string, any>> | undefined>
+// ) {
+//   throw new Error("Function not implemented.");
+// }
+// function next(arg0: Error): Response<any, Record<string, any>> | PromiseLike<Response<any, Record<string, any>> | undefined> | undefined {
+//   throw new Error("Function not implemented.");
+// }
 

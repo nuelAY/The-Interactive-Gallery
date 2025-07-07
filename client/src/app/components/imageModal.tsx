@@ -1,12 +1,11 @@
 'use client';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
 import toast from 'react-hot-toast';
 import { postComment } from '../store/commentsSlice';
-import { text } from 'express';
 import { useAppDispatch } from '../store/hooks';
 // import TagDisplay from './tagDisplay';
 

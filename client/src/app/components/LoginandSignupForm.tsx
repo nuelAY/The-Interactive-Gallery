@@ -1,5 +1,7 @@
 'use client';
 
+// This is the login and sign forms merge into one but can be navigated through when necessary
+
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
@@ -63,6 +65,8 @@ const LoginSignupForm = () => {
           {isSignup ? 'Create an Account' : 'Welcome Back'}
         </h2>
 
+
+        {/* The form including both authentication, login and signup */}
         <form onSubmit={handleSubmit} className="space-y-5">
           {isSignup && (
             <div>

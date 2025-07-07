@@ -1,3 +1,4 @@
+// API call to get images from the UNSPLASH API 
 import express from 'express';
 import axios from 'axios';
 

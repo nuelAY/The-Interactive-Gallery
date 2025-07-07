@@ -8,6 +8,8 @@ const JWT_SECRET = process.env.JWT_SECRET as string;
 const generateToken = (id: number) =>
   jwt.sign({ id }, JWT_SECRET, { expiresIn: '7d' });
 
+
+// To sign up user
 export const register = async (req: Request, res: Response, next: NextFunction) => {
   const { name, email, password } = req.body;
 
@@ -32,6 +34,8 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
   }
 };
 
+
+// To Log in User
 export const login = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
 
@@ -53,7 +57,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
   }
 };
 
-// Optional: For authenticated routes
+// For authenticated routes
 export const getMe = async (req: Request, res: Response) => {
   const user = (req as any).user;
   res.json(user);

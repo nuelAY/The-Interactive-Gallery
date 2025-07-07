@@ -1,3 +1,5 @@
+// This is to fetch the images being sent by the api call being made at the backend
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "./index";
 import { ReactNode } from "react";
@@ -17,14 +19,14 @@ interface GalleryState {
   images: UnsplashImage[];
   loading: boolean;
   error: string | null;
-  activeTag: string | null; // ← NEW
+  activeTag: string | null;
 }
 
 const initialState: GalleryState = {
   images: [],
   loading: false,
   error: null,
-  activeTag: null, // ✅
+  activeTag: null,
 };
 
 export const fetchImages = createAsyncThunk(

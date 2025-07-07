@@ -1,4 +1,3 @@
-// client/components/ProtectedRoute.tsx
 'use client';
 
 import { useSelector } from 'react-redux';

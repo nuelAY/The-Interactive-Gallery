@@ -10,6 +10,7 @@ export interface AuthRequest extends Request {
   };
 }
 
+// To protect user details to prevent multiple registrations with invalid details
 export const protect = async (
   req: AuthRequest,
   res: Response,

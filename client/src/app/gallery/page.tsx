@@ -1,5 +1,7 @@
 'use client';
 
+//The page where all the images are being displayed wit their additonal details; like likes and comments. Also a navigation that calls user detils with a logout button
+
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
@@ -15,13 +17,16 @@ const GalleryPage = ({ image }: { image: any }) => {
   const { images, loading, error } = useSelector(selectGallery);
   const { comments: commentsByImage } = useSelector((state: RootState) => state.comments);
   const [selectedImage, setSelectedImage] = useState<any | null>(null);
-
   const comments = selectedImage ? (commentsByImage[selectedImage.id] || []) : [];
 
+
+  // To fetch the images from the API to display
   useEffect(() => {
     dispatch(fetchImages('nature'));
   }, [dispatch]);
 
+
+  // To fetch the comments being made on the images by user
   useEffect(() => {
     if (selectedImage?.id) {
       dispatch(fetchComments(selectedImage.id));
@@ -33,7 +38,7 @@ const GalleryPage = ({ image }: { image: any }) => {
       <Navbar />
       <div className="p-4 relative">
         <h1 className="text-3xl font-bold mb-6">Gallery</h1>
-
+        {/* A loader and an error handler for when the images fail to display*/}
         {loading && <p>Loading...</p>}
         {error && <p className="text-red-500">{error}</p>}
 

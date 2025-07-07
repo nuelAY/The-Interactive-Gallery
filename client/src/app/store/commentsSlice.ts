@@ -1,4 +1,5 @@
-// client/store/commentSlice.ts
+// This is for storing and retrieving user commments made on each pictures
+
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { JSX } from "react";
 
@@ -56,7 +57,7 @@ export const postComment = createAsyncThunk(
     });
 
     if (!res.ok) {
-      const errorText = await res.text(); // this shows you the HTML error
+      const errorText = await res.text(); 
       console.error("Server error:", errorText);
       throw new Error(`Server responded with status ${res.status}`);
     }

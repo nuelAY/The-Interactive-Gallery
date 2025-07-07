@@ -30,5 +30,5 @@ export const getUserById = async (id: number) => {
     'SELECT id, name, email FROM users WHERE id = $1',
     [id]
   );
-  return result.rows[0]; // Returns user object or undefined
+  return result.rows[0];
 };

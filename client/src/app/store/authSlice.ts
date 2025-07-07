@@ -1,4 +1,4 @@
-// client/store/authSlice.ts
+// User autentication, to store their signup and login details
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 interface User {

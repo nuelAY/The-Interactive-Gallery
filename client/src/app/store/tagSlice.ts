@@ -1,3 +1,5 @@
+// This entire code here is not of use, I wrote it thinking I would use it, but I eneded up not using it
+
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 interface Tag {
