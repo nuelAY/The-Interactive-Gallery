@@ -42,6 +42,12 @@
     "start:client": "next start client/",
     "dev:server": "nodemon server/server.ts",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
-    "db:init": "psql -U postgres -d gallery -f server/db/init.sql"
-  }
+    "db:init": "psql -U postgres -d gallery -f server/db/init.sql",
+    "check-types": "tsc --noEmit"
+  },
+  "packageManager": "npm@8.5.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
 }
