@@ -15,9 +15,10 @@ import { fetchComments } from '../store/commentsSlice';
 const GalleryPage = ({ image }: { image: any }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { images, loading, error } = useSelector(selectGallery);
-  const { comments: commentsByImage } = useSelector((state: RootState) => state.comments);
+  const commentsByImage = useSelector((state: RootState) => state.comments.commentsByImage);
+
   const [selectedImage, setSelectedImage] = useState<any | null>(null);
-  const comments = selectedImage ? (commentsByImage[selectedImage.id] || []) : [];
+  // const comments = selectedImage ? (commentsByImage[selectedImage.id] || []) : [];
 
 
   // To fetch the images from the API to display
@@ -33,6 +34,9 @@ const GalleryPage = ({ image }: { image: any }) => {
     }
   }, [dispatch, selectedImage?.id]);
 
+
+
+
   return (
     <ProtectedRoute>
       <Navbar />
@@ -43,40 +47,47 @@ const GalleryPage = ({ image }: { image: any }) => {
         {error && <p className="text-red-500">{error}</p>}
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {images.map((image) => (
-            <div
-              key={image.id}
-              className="rounded overflow-hidden shadow cursor-pointer hover:scale-105 transition"
-              onClick={() => setSelectedImage(image)}
-            >
-              <img
-                src={image.urls.small}
-                alt={image.alt_description || 'Unsplash Image'}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-2 text-sm text-gray-700 dark:text-gray-300 space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium">📸 {image.user.name}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-500 dark:text-gray-400">❤️ {image.user.total_likes} likes</span>
-                </div>
-              </div>
-              <div className="mt-4 space-y-1">
-                <p className="font-semibold">Comments:</p>
-                {comments.length === 0 ? (
-                  <p className="text-xs text-gray-500 italic">No comments yet.</p>
-                ) : (
-                  comments.map((comment) => (
-                    <div key={comment.id} className="text-sm border-b py-1">
-                      {comment.text}
-                    </div>
-                  ))
-                )}
-              </div>
+          {images.map((image) => {
 
-            </div>
-          ))}
+            const imageComments = (commentsByImage[image.id] || []).slice(0, 3);
+            return (
+              <div
+                key={image.id}
+                className="rounded overflow-hidden shadow cursor-pointer hover:scale-105 transition"
+                onClick={() => setSelectedImage(image)}
+              >
+                <img
+                  src={image.urls.small}
+                  alt={image.alt_description || 'Unsplash Image'}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-2 text-sm text-gray-700 dark:text-gray-300 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">📸 {image.user.name}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-500 dark:text-gray-400">❤️ {image.user.total_likes} likes</span>
+                  </div>
+                </div>
+                <div className="mt-4 space-y-1">
+                  <p className="font-semibold">Comments:</p>
+                  {imageComments.length === 0 ? (
+                    <p className="text-xs text-gray-500 italic">No comments yet.</p>
+                  ) : (
+                    imageComments.map((comment) => (
+                      <div key={comment.id} className="text-sm border-b py-1">
+                        <p className="font-semibold">{comment.author?.name || "User"}:</p>
+                        <p>{comment.text}</p>
+                      </div>
+                    ))
+                  )}
+
+                </div>
+
+
+              </div>
+            )
+          })}
         </div>
       </div>
 

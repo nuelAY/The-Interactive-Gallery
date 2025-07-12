@@ -1,42 +1,57 @@
 // This is for storing and retrieving user commments made on each pictures
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { JSX } from "react";
 
 interface Comment {
   length: number;
-  map(arg0: (comment: any) => JSX.Element): import("react").ReactNode;
   id: number;
   imageId: string;
   text: string;
   createdAt: string;
+    userId: number;
+  author?: {
+    name: string;
+  };
 }
 
 interface CommentState {
-  comments: Comment[];
+  commentsByImage: Record<string, Comment[]>;
   loading: boolean;
   error: string | null;
   isPosting: boolean;
-  token: string | null
 }
 
 const initialState: CommentState = {
-  comments: [],
-  token: null,
+  commentsByImage: {},
   loading: false,
   error: null,
   isPosting: false,
 };
 
+// GET comments for an image
 export const fetchComments = createAsyncThunk(
   "comments/fetchComments",
-  async (imageId: string) => {
-    const res = await fetch(`http://localhost:5000/api/comments/${imageId}`);
-    console.log("response:", res);
-    return await res.json();
+  async (imageId: string, thunkAPI) => {
+    try {
+      console.log("🔄 Fetching comments for:", imageId);
+      const res = await fetch(`http://localhost:5000/api/comments/${imageId}`);
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText || "Failed to fetch comments");
+      }
+
+      const data = await res.json();
+      console.log("✅ Fetched comments:", data);
+      return data;
+    } catch (err: any) {
+      console.error("❌ fetchComments error:", err.message);
+      return thunkAPI.rejectWithValue(err.message);
+    }
   }
 );
 
+// POST a new comment
 export const postComment = createAsyncThunk(
   "comments/postComment",
   async (
@@ -47,22 +62,28 @@ export const postComment = createAsyncThunk(
     }: { imageId: string; text: string; token: string | null },
     thunkAPI
   ) => {
-    const res = await fetch(`http://localhost:5000/api/comments/${imageId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` }),
-      },
-      body: JSON.stringify({ imageId, text }),
-    });
+    try {
+      const res = await fetch(`http://localhost:5000/api/comments/${imageId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: JSON.stringify({ text }),
+      });
 
-    if (!res.ok) {
-      const errorText = await res.text(); 
-      console.error("Server error:", errorText);
-      throw new Error(`Server responded with status ${res.status}`);
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText || "Failed to post comment");
+      }
+
+      const data = await res.json();
+      console.log("✅ Comment posted:", data);
+      return data;
+    } catch (err: any) {
+      console.error("❌ postComment error:", err.message);
+      return thunkAPI.rejectWithValue(err.message);
     }
-
-    return await res.json();
   }
 );
 
@@ -78,27 +99,33 @@ const commentSlice = createSlice({
       })
       .addCase(fetchComments.fulfilled, (state, action) => {
         state.loading = false;
-        state.comments = action.payload;
+        const imageId = action.meta.arg; // ⬅️ imageId was passed into the thunk
+        state.commentsByImage[imageId] = action.payload;
       })
       .addCase(fetchComments.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to fetch comments";
+        state.error = action.payload as string;
       });
 
     builder
       .addCase(postComment.pending, (state) => {
         state.isPosting = true;
+        state.error = null;
       })
       .addCase(postComment.fulfilled, (state, action) => {
         state.isPosting = false;
-        state.comments.push(action.payload);
-         state.token = action.payload.token;
-        // After successful login/signup
-        localStorage.setItem("user", JSON.stringify(action.payload));
+
+        const imageId = action.payload.imageId;
+        if (!state.commentsByImage[imageId]) {
+          state.commentsByImage[imageId] = [];
+        }
+        // Add new comment to top of list
+        state.commentsByImage[imageId].unshift(action.payload);
       })
+
       .addCase(postComment.rejected, (state, action) => {
         state.isPosting = false;
-        state.error = action.error.message || "Failed to post comment";
+        state.error = action.payload as string;
       });
   },
 });

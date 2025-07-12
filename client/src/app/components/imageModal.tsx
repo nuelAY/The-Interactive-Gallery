@@ -36,7 +36,7 @@ const ImageModal: React.FC<Props> = ({ image, onClose }) => {
 
   return (
     <motion.div
-      className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center"
+      className="fixed top-0 left-0 right-0 bottom-0 bg-gray-700 backdrop-blur z-30 flex items-center justify-center"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -53,7 +53,7 @@ const ImageModal: React.FC<Props> = ({ image, onClose }) => {
         <img
           src={image.urls.full}
           alt={image.alt_description}
-          className="w-full h-auto rounded mb-4"
+          className="w-[500px] h-[250px] object-cover rounded mb-4"
         />
         <h2 className="text-xl font-semibold">
           {image.alt_description || 'Untitled'}
