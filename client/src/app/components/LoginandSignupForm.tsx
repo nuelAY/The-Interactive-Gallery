@@ -28,12 +28,29 @@ const LoginSignupForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (
-      !form.email.trim() ||
-      !form.password.trim() ||
-      (isSignup && !form.name.trim())
-    ) {
+    const { name, email, password } = form;
+
+    // Trimmed fields
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+    const trimmedName = name.trim();
+
+    // Validation logic
+    if (!trimmedEmail || !trimmedPassword || (isSignup && !trimmedName)) {
       toast.error('Please fill in all required fields.');
+      return;
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      toast.error('Please enter a valid email address.');
+      return;
+    }
+
+    // Password length validation
+    if (trimmedPassword.length < 6) {
+      toast.error('Password must be at least 6 characters.');
       return;
     }
 
@@ -41,10 +58,10 @@ const LoginSignupForm = () => {
 
     try {
       if (isSignup) {
-        await dispatch(signup(form)).unwrap();
+        await dispatch(signup({ name: trimmedName, email: trimmedEmail, password: trimmedPassword })).unwrap();
         toast.success('Signup successful!');
       } else {
-        await dispatch(login({ email: form.email, password: form.password })).unwrap();
+        await dispatch(login({ email: trimmedEmail, password: trimmedPassword })).unwrap();
         toast.success('Login successful!');
       }
 
@@ -55,6 +72,7 @@ const LoginSignupForm = () => {
       toast.dismiss(loadingToast);
     }
   };
+
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-black/60 dark:bg-black/80 backdrop-blur-sm px-4">
@@ -123,8 +141,8 @@ const LoginSignupForm = () => {
             type="submit"
             disabled={loading}
             className={`w-full flex items-center justify-center gap-2 text-white py-3 rounded-lg font-semibold transition-all ${loading
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700'
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-blue-600 hover:bg-blue-700'
               }`}
           >
             {loading && <FiLoader className="animate-spin text-xl" />}
